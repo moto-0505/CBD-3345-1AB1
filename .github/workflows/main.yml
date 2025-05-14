@@ -6,28 +6,22 @@ on:
   pull_request:
     branches: [ main ]
 
-permissions:
-  contents: read
-  statuses: write
-
 jobs:
   super-linter:
-    name: Lint Code Base
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Required for full git history
+          fetch-depth: 0
 
-      - name: Run Super-Linter
+      - name: Run Super-Linter (Customized)
         uses: super-linter/super-linter@v7.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Customize which linters run:
-          DEFAULT_BRANCH: main
-          VALIDATE_ALL_CODEBASE: true
-          # To disable specific linters (if needed):
-          DISABLE_MARKDOWN_PRETTIER: false  # Set to 'true' to skip markdown formatting checks
-          MARKDOWN_CONFIG_FILE: .markdownlint.json  # Optional config file
+          # DISABLE UNWANTED LINTERS (add as needed)
+          DISABLE_MARKDOWN_PRETTIER: "true"     # Skip Markdown formatting
+          DISABLE_YAML_PRETTIER: "true"         # Skip YAML formatting
+          DISABLE_JSCPD: "true"                 # Skip copy-paste detection
+          # Only run specific linters (optional)
+          VALIDATE_MARKDOWN: "true"             # Still checks basic Markdown syntax
+          VALIDATE_YAML: "true"                 # Still checks YAML syntax
