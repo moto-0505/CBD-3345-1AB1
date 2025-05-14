@@ -1,33 +1,33 @@
----
-name: Lint
+name: Super-Linter
 
-on: # yamllint disable-line rule:truthy
-  push: null
-  pull_request: null
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-permissions: {}
+permissions:
+  contents: read
+  statuses: write
 
 jobs:
-  build:
-    name: Lint
+  super-linter:
+    name: Lint Code Base
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: read
-      # To report GitHub Actions status checks
-      statuses: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # super-linter needs the full git history to get the
-          # list of files that changed across commits
-          fetch-depth: 0
+          fetch-depth: 0  # Required for full git history
 
-      - name: Super-linter
-        uses: super-linter/super-linter@v7.4.0 # x-release-please-version
+      - name: Run Super-Linter
+        uses: super-linter/super-linter@v7.4.0
         env:
-          # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Customize which linters run:
+          DEFAULT_BRANCH: main
+          VALIDATE_ALL_CODEBASE: true
+          # To disable specific linters (if needed):
+          DISABLE_MARKDOWN_PRETTIER: false  # Set to 'true' to skip markdown formatting checks
+          MARKDOWN_CONFIG_FILE: .markdownlint.json  # Optional config file
